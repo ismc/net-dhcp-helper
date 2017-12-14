@@ -1,0 +1,6 @@
+---
+- include_tasks: "{{ ansible_network_os }}-get-facts.yml"
+
+- debug: var=interface_address_data
+
+- include_tasks: "{{ ansible_network_os }}-set-helper.yml"

@@ -1,0 +1,12 @@
+---
+- nxos_command:
+    commands:
+      - show run interface
+    timeout: 60
+  register: command_output
+
+- set_fact:
+    int_spec_file: "{{ role_path }}/spec_files/nxos-intf-addrs.spec"
+
+- set_fact:
+    interface_address_data: "{{ command_output.stdout[0] | parse_cli(int_spec_file) }}"

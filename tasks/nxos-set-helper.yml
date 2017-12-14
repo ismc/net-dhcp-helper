@@ -1,0 +1,17 @@
+---
+- set_fact:
+    helper_commands: "{{ helper_commands|default([]) + [ 'ip dhcp relay address ' + helper_item ]}}"
+  with_items: "{{ helper_addresses }}"
+  loop_control:
+    loop_var: helper_item
+
+- name: Set the DHCP helper
+  nxos_config:
+    lines: "{{ helper_commands }}"
+    before: "{{ 'no ip dhcp relay address' if interface_item.relay else omit }}"
+    parents: "interface {{ interface_item.name }}"
+    timeout: 60
+  when: interface_item.ip | ipaddr('network/prefix') in helper_subnets
+  with_items: "{{ interface_address_data }}"
+  loop_control:
+    loop_var: interface_item
